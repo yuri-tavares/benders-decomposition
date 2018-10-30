@@ -789,7 +789,7 @@ def benders_decomposition_linear_original_bounded(c, d, A, B, b, M,
     -----------------------------------------------------------------'''
     if goto_second_part:
       c1 = b - (B.dot(y)).tolist()[0]
-      res = linprog(c = c1, A_ub = (-np.matrix(A)).T, bounds = (0,M),
+      res = linprog(c = c1, A_ub = (-np.matrix(A)).T, 
                     b_ub = -c, callback = extremeRay_and_dRow)
       u, it = res.x, it + res.nit
       '''---------------------------------------------------------------

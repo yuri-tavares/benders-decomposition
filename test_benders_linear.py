@@ -7,9 +7,27 @@ from benders_linear import benders_decomposition_linear_alternative, benders_dec
 import sys
 from plot_linear_inequalities import plot_linear_inequalities
 
-def test_simplex(A, b, c):
-  ''' Solves original problem with only one simplex. '''
-  res = linprog(A_ub = A, b_ub = b, c= -np.array(c))
+def test_simplex(A, B, b, c, d):
+  ''' 
+  Solves the problem 
+  
+    max cx + dy
+    s.t.: Ax + By <= b
+  
+  with only one simplex. 
+  
+  This problem is equivalent to
+  
+    max cx + dy
+    s.t.: |A B| |x| <= |b|
+          |0 0| |y|    |0|
+  
+  '''
+  AB = np.concatenate((A, B),axis=1)
+  AB = np.concatenate((AB, np.zeros(AB.shape)),axis=0)
+  b0 = np.concatenate((b, np.zeros(len(b))),axis=0)
+  cd = np.concatenate((c, d),axis=0)
+  res = linprog(A_ub = AB, b_ub = b0, c= -np.array(cd))
   print "Results of simplex:"
   print res
 
@@ -21,77 +39,69 @@ def print_results(x0, x, y, it, n):
   print "it = ", it
   print "n = ", n
 
-def sizes(A,c):
-  sa = A.shape[1]
-  sa2 = A.shape[1] // 2
-  sc = len(c)
-  sc2 = len(c) // 2
-  return (sa, sa2, sc, sc2)  
-
-def test1(A, b, c, M):
+def test1(A, B, b, c, d, M):
   '''
   Test 1: Comparing results of simplex and benders_decomposition_linear_original_bounded. 
   '''
-  (sa, sa2, sc, sc2) = sizes(A,c)
-  
   # solves using benders decomposition 
-  (x0, x, y, it, n) = benders_decomposition_linear_original_bounded(c[0:sc2], c[sc2:sc], A[:,0:sa2], A[:,sa2:sa], b, M)
+  (x0, x, y, it, n) = benders_decomposition_linear_original_bounded(c, d, A, B, b, M)
   print "Results from benders_decomposition_linear_original_bounded:"
   print_results(x0, x, y, it, n)
-  
-  test_simplex(A, b, c)
+  test_simplex(A, B, b, c, d)
 
-def test2(A, b, c):
+def test2(A, B, b, c, d):
   '''
   Test 2: Comparing results of simplex and benders_decomposition_linear_original. 
   '''
-  (sa, sa2, sc, sc2) = sizes(A,c)
-
   # solves using benders decomposition 
-  (x0, x, y, it, n) = benders_decomposition_linear_original(c[0:sc2], c[sc2:sc], A[:,0:sa2], A[:,sa2:sa], b)
+  (x0, x, y, it, n) = benders_decomposition_linear_original(c, d, A, B, b)
   print "Results from benders_decomposition_linear_original:"
   print_results(x0, x, y, it, n)
+  test_simplex(A, B, b, c, d)
 
-  test_simplex(A, b, c)
-
-def test3(A, b, c, M):
+def test3(A, B, b, c, d, M):
   '''
   Test 3: Comparing results of simplex and benders_decomposition_linear_alternative. 
   '''
-  
-  (sa, sa2, sc, sc2) = sizes(A,c)
-  
   # solves using benders decomposition 
-  (x0, x, y, it, n) = benders_decomposition_linear_alternative(c[0:sc2], c[sc2:sc], A[:,0:sa2], A[:,sa2:sa], b, M)
+  (x0, x, y, it, n) = benders_decomposition_linear_alternative(c, d, A, B, b, M)
   print "Results from benders_decomposition_linear_alternative:"
   print_results(x0, x, y, it, n)
-  
-  test_simplex(A, b, c)
+  test_simplex(A, B, b, c, d)
 
 
 M = 10000000000.0
 
-c =  [8., 6]
-A = np.matrix([[2., 1.] ])
+c = [8.]
+d = [6]
+A = np.matrix([[2.]])
+B = np.matrix([[1.]])
 b = [4.]
 
-test1(A,b,c,M)
-test2(A,b,c)
-test3(A,b,c,M)
+test1(A,B,b,c,d,M)
+test2(A,B,b,c,d)
+test3(A,B,b,c,d,M)
 
-c =  [8, 6, -2, -42,-18,-33]
-A = np.matrix([[2, 1, -1, -10, -8,  0],
-              [1, 1,  1,  -5,  0, -8]])
+c =  [8, 6, -2]
+d =  [-42,-18,-33]
+A = np.matrix([[2, 1, -1.],
+               [1, 1.,  1]])  
+B = np.matrix([[-10, -8,  0],
+               [-5,  0, -8]])
 b = [-4,-3]
 
-test1(A,b,c,M)
-test2(A,b,c)
-test3(A,b,c,M)
+test1(A,B,b,c,d,M)
+test2(A,B,b,c,d)
+test3(A,B,b,c,d,M)
 
-c =  np.array([4,0])
-A = np.matrix([[-2, 0], [-1, 0]])
+c = [-4]
+d = [0.]
+A = np.matrix([[-2], 
+               [-1]])
+B = np.matrix([[1.], 
+               [4.]])
 b = [-8, -6]
 
-test1(A,b,c,M)
-test2(A,b,c)
-test3(A,b,c,M)
+test1(A,B,b,c,d,M)
+test2(A,B,b,c,d)
+test3(A,B,b,c,d,M)
