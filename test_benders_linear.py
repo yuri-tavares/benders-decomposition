@@ -20,14 +20,11 @@ def test_simplex(A, B, b, c, d):
   
     max cx + dy
     s.t.: |A B| |x| <= |b|
-          |0 0| |y|    |0|
-  
+                |y|
   '''
   AB = np.concatenate((A, B),axis=1)
-  AB = np.concatenate((AB, np.zeros(AB.shape)),axis=0)
-  b0 = np.concatenate((b, np.zeros(len(b))),axis=0)
   cd = np.concatenate((c, d),axis=0)
-  res = linprog(A_ub = AB, b_ub = b0, c= -np.array(cd))
+  res = linprog(A_ub = AB, b_ub = b, c= -np.array(cd))
   print "Results of simplex:"
   print res
 
