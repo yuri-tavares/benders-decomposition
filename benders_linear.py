@@ -83,7 +83,7 @@ def extremeRay_and_dRow(xk, **kwargs):
       # See Bazaraa et al, Linear Programming and Network Flows, 
       # Fourth Edition, p.118
       global extremeDirection
-      e = np.zeros((m,1))
+      e = np.zeros((n,1))
       e[N.index(k)]=1;
       extremeDirection = np.concatenate((-yk,e))
 
