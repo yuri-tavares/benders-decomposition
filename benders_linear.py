@@ -439,7 +439,7 @@ def benders_decomposition_linear_original(c, d, A, B, b,
   with S = ℝ, f(y) = d y, and F(y) = By,
   
   where
-         p       q       m×p       m×p       m
+         p       q       m×p       m×q       m
     c ∈ ℝ , d ∈ ℝ , A ∈ ℝ   , B ∈ ℝ   , b ∈ ℝ .
   
   Arguments:
@@ -661,7 +661,7 @@ def benders_decomposition_linear_original_bounded(c, d, A, B, b, M,
   with S = [0,M], f(y) = d y, and F(y) = By,
   
   where
-         p       q       m×p       m×p       m
+         p       q       m×p       m×q       m
     c ∈ ℝ , d ∈ ℝ , A ∈ ℝ   , B ∈ ℝ   , b ∈ ℝ .
   
   Arguments:
@@ -881,7 +881,7 @@ def benders_decomposition_linear_alternative(c, d, A, B, b, M,
   with S = ℝ, f(y) = d y, and F(y) = By,
   
   where
-         p       q       m×p       m×p       m
+         p       q       m×p       m×q       m
     c ∈ ℝ , d ∈ ℝ , A ∈ ℝ   , B ∈ ℝ   , b ∈ ℝ .
   
   In this procedure, it is added the restriction to set P
