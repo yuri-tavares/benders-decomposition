@@ -670,7 +670,7 @@ def benders_decomposition_linear_original_bounded(c, d, A, B, b, M,
     A: matrix m x p;
     B: matrix m x q;
     b: vector with m elements;
-    M: a real big value; 
+    M: a big real value; 
     chooseSubsetC: a function that takes a m x p matrix A, a p elements 
       vector c and return a set of vectors with m+1 elements. 
   Return:
