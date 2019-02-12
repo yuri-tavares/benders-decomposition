@@ -258,7 +258,7 @@ def linearSubproblemBounded(Q, B, d, b, M):
     B: matrix  m x q;
     d: vector with q elements;
     b: vector with m elements.
-    M: a real big value.
+    M: a big real value.
   Return
                                     q
     x0, y: a value and a vector in ℝ  that solves problem, if exists. 
@@ -896,7 +896,7 @@ def benders_decomposition_linear_alternative(c, d, A, B, b, M,
     A: matrix m x p;
     B: matrix m x q;
     b: vector with m elements;
-    M: a real big value;
+    M: a big real value;
     chooseSubsetC: a function that takes a m x p matrix A, a m x q 
       matrix B, a p elements vector c and a q elements vector 
       d and return a set of vectors with m+1 elements. 
