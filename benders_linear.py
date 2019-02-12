@@ -657,8 +657,8 @@ def benders_decomposition_linear_original_bounded(c, d, A, B, b, M,
   
        T                            p     
   max{c x + f(y)|Ax + F(y) ≤ b,x ∈ ℝ ,y ∈ S}
-            q         T
-  with S = ℝ, f(y) = d y, and F(y) = By,
+                q         T
+  with S = [0,M], f(y) = d y, and F(y) = By,
   
   where
          p       q       m×p       m×p       m
