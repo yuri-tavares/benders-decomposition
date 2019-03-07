@@ -544,11 +544,11 @@ def benders_decomposition_linear_original(c, d, A, B, b,
        (x , y ) =  max{x  | (x , y) ∈ G(Q )}
          0              0     0
     -----------------------------------------------------------------'''
-    previous_x0 = new_x0
-    previous_y = new_y
     if goto_first_part:
       (x0, y, ite) = linearSubproblem(Q, B, d, b)
       it = it + ite
+      previous_x0 = new_x0
+      previous_y = new_y
       new_x0 = x0
       new_y = y
       '''---------------------------------------------------------------
@@ -652,10 +652,10 @@ def benders_decomposition_linear_original(c, d, A, B, b,
           else:
             Q = Q.union([(1.0,)+tuple(u),(0.0,)+tuple(v)])
     n = n + 1
-    goto_first_part = True
     ''' Avoiding infinite loop. '''
-    if(previous_x0 == new_x0 and np.array_equal(previous_y, new_y)):
+    if(goto_first_part and (previous_x0 == new_x0) and np.array_equal(previous_y, new_y)):
       return (x0, x, y, it, n)
+    goto_first_part = True
 
 
 def benders_decomposition_linear_original_bounded(c, d, A, B, b, M, 
@@ -777,11 +777,11 @@ def benders_decomposition_linear_original_bounded(c, d, A, B, b, M,
        (x , y ) =  max{x  | (x , y) ∈ G(Q )}
          0              0     0
     -----------------------------------------------------------------'''
-    previous_x0 = new_x0
-    previous_y = new_y
     if goto_first_part:
       (x0, y, ite) = linearSubproblemBounded(Q, B, d, b, M)
       it = it + ite
+      previous_x0 = new_x0
+      previous_y = new_y
       new_x0 = x0
       new_y = y
       '''---------------------------------------------------------------
@@ -885,10 +885,10 @@ def benders_decomposition_linear_original_bounded(c, d, A, B, b, M,
           else:
             Q = Q.union([(1.0,)+tuple(u),(0.0,)+tuple(v)])
     n = n + 1
-    goto_first_part = True
     ''' Avoiding infinite loop. '''
-    if(previous_x0 == new_x0 and np.array_equal(previous_y, new_y)):
+    if(goto_first_part and (previous_x0 == new_x0) and np.array_equal(previous_y, new_y)):
       return (x0, x, y, it, n)
+    goto_first_part = True
 
 def benders_decomposition_linear_alternative(c, d, A, B, b, M,
                                  chooseSubsetC = chooseSubsetZero):
@@ -1014,11 +1014,11 @@ def benders_decomposition_linear_alternative(c, d, A, B, b, M,
        (x , y ) =  max{x  | (x , y) ∈ G(Q )}
          0              0     0
     -----------------------------------------------------------------'''
-    previous_x0 = new_x0
-    previous_y = new_y
     if goto_first_part:
       (x0, y, ite) = linearSubproblem(Q, B, d, b)
       it = it + ite
+      previous_x0 = new_x0
+      previous_y = new_y
       new_x0 = x0
       new_y = y
       '''---------------------------------------------------------------
@@ -1172,7 +1172,7 @@ def benders_decomposition_linear_alternative(c, d, A, B, b, M,
         return ( float('inf'), (float('inf'),)*p, 
                  (float('inf'),)*q, it, n)
     n = n + 1
-    goto_first_part = True
     ''' Avoiding infinite loop. '''
-    if(previous_x0 == new_x0 and np.array_equal(previous_y, new_y)):
+    if(goto_first_part and (previous_x0 == new_x0) and np.array_equal(previous_y, new_y)):
       return (x0, x, y, it, n)
+    goto_first_part = True
