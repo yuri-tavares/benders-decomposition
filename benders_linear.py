@@ -427,8 +427,8 @@ def chooseAnyPointG(Q, B, d, b):
 
 
 
-def benders_decomposition_linear_original(c, d, A, B, b,  
-                           chooseSubsetC = chooseSubsetZero):
+def benders_decomposition_linear_original(c, d, A, B, b,
+                                          chooseSubsetC = chooseSubsetZero):
   '''
   Original Benders' procedure for linear functions. This procedure 
   solves the problem
@@ -499,7 +499,7 @@ def benders_decomposition_linear_original(c, d, A, B, b,
   '''-------------------------------------------------------------------
   2) Set Q ⊂ C
   -------------------------------------------------------------------'''
-  Q = chooseSubsetC(A,B,c,d)
+  Q = chooseSubsetC(A, B, c, d)
   '''-------------------------------------------------------------------
                                                  0
   3) if u  > 0 for at least one point (u , u) ∈ Q  then
@@ -535,6 +535,8 @@ def benders_decomposition_linear_original(c, d, A, B, b,
     it = it + it2
     goto_second_part = True
   n = 0
+  new_x0 = None
+  new_y = [None]
   while True:
     '''-----------------------------------------------------------------
      4) first part of ν-th iteration: Solve
@@ -542,9 +544,13 @@ def benders_decomposition_linear_original(c, d, A, B, b,
        (x , y ) =  max{x  | (x , y) ∈ G(Q )}
          0              0     0
     -----------------------------------------------------------------'''
+    previous_x0 = new_x0
+    previous_y = new_y
     if goto_first_part:
       (x0, y, ite) = linearSubproblem(Q, B, d, b)
       it = it + ite
+      new_x0 = x0
+      new_y = y
       '''---------------------------------------------------------------
       5) if problem in 4 is not feasible then
 
@@ -567,7 +573,8 @@ def benders_decomposition_linear_original(c, d, A, B, b,
     if goto_second_part:
       c1 = b - (B.dot(y)).tolist()[0]
       res = linprog(c = c1, A_ub = (-np.matrix(A)).T,
-                    b_ub = -c, callback = extremeRay_and_dRow)
+                    b_ub = -c, callback = extremeRay_and_dRow,
+                    options={"bland": True})
       u, it = res.x, it + res.nit
       '''---------------------------------------------------------------
       7) if problem in 6 is not feasible then
@@ -646,10 +653,13 @@ def benders_decomposition_linear_original(c, d, A, B, b,
             Q = Q.union([(1.0,)+tuple(u),(0.0,)+tuple(v)])
     n = n + 1
     goto_first_part = True
+    ''' Avoiding infinite loop. '''
+    if(previous_x0 == new_x0 and np.array_equal(previous_y, new_y)):
+      return (x0, x, y, it, n)
 
 
 def benders_decomposition_linear_original_bounded(c, d, A, B, b, M, 
-                           chooseSubsetC = chooseSubsetZero):
+                                                  chooseSubsetC = chooseSubsetZero):
   '''
   Original Benders' procedure for linear functions with subproblems
   working with values bounded in [0, M]. This procedure solves 
@@ -722,7 +732,7 @@ def benders_decomposition_linear_original_bounded(c, d, A, B, b, M,
   '''-------------------------------------------------------------------
   2) Set Q ⊂ C
   -------------------------------------------------------------------'''
-  Q = chooseSubsetC(A,B,c,d)
+  Q = chooseSubsetC(A, B, c, d)
   '''-------------------------------------------------------------------
                                                  0
   3) if u  > 0 for at least one point (u , u) ∈ Q  then
@@ -758,6 +768,8 @@ def benders_decomposition_linear_original_bounded(c, d, A, B, b, M,
     it = it + it2
     goto_second_part = True
   n = 0
+  new_x0 = None
+  new_y = [None]
   while True:
     '''-----------------------------------------------------------------
      4) first part of ν-th iteration: Solve
@@ -765,9 +777,13 @@ def benders_decomposition_linear_original_bounded(c, d, A, B, b, M,
        (x , y ) =  max{x  | (x , y) ∈ G(Q )}
          0              0     0
     -----------------------------------------------------------------'''
+    previous_x0 = new_x0
+    previous_y = new_y
     if goto_first_part:
       (x0, y, ite) = linearSubproblemBounded(Q, B, d, b, M)
       it = it + ite
+      new_x0 = x0
+      new_y = y
       '''---------------------------------------------------------------
       5) if problem in 4 is not feasible then
 
@@ -790,7 +806,8 @@ def benders_decomposition_linear_original_bounded(c, d, A, B, b, M,
     if goto_second_part:
       c1 = b - (B.dot(y)).tolist()[0]
       res = linprog(c = c1, A_ub = (-np.matrix(A)).T, 
-                    b_ub = -c, callback = extremeRay_and_dRow)
+                    b_ub = -c, callback = extremeRay_and_dRow,
+                    options={"bland": True})
       u, it = res.x, it + res.nit
       '''---------------------------------------------------------------
       7) if problem in 6 is not feasible then
@@ -869,6 +886,9 @@ def benders_decomposition_linear_original_bounded(c, d, A, B, b, M,
             Q = Q.union([(1.0,)+tuple(u),(0.0,)+tuple(v)])
     n = n + 1
     goto_first_part = True
+    ''' Avoiding infinite loop. '''
+    if(previous_x0 == new_x0 and np.array_equal(previous_y, new_y)):
+      return (x0, x, y, it, n)
 
 def benders_decomposition_linear_alternative(c, d, A, B, b, M,
                                  chooseSubsetC = chooseSubsetZero):
@@ -985,6 +1005,8 @@ def benders_decomposition_linear_alternative(c, d, A, B, b, M,
     it = it + it2
     goto_second_part = True
   n = 0
+  new_x0 = None
+  new_y = [None]
   while True:
     '''-----------------------------------------------------------------
      4) first part of ν-th iteration: Solve
@@ -992,9 +1014,13 @@ def benders_decomposition_linear_alternative(c, d, A, B, b, M,
        (x , y ) =  max{x  | (x , y) ∈ G(Q )}
          0              0     0
     -----------------------------------------------------------------'''
+    previous_x0 = new_x0
+    previous_y = new_y
     if goto_first_part:
       (x0, y, ite) = linearSubproblem(Q, B, d, b)
       it = it + ite
+      new_x0 = x0
+      new_y = y
       '''---------------------------------------------------------------
       5) if problem in 4 is not feasible then
 
@@ -1022,7 +1048,8 @@ def benders_decomposition_linear_alternative(c, d, A, B, b, M,
       A1 = np.concatenate((A, np.matrix((-1.0,)*m).T),axis=1)
       b1 = b - (B.dot(y)).tolist()[0]
       res = linprog(c = -c1, A_ub = A1, b_ub = b1, 
-                    callback = extremeRay_and_dRow)
+                    callback = extremeRay_and_dRow,
+                    options={"bland": True})
       '''---------------------------------------------------------------
       7) if problem in 6 is finite then
                    ν         T ν   T ν   ν
@@ -1146,4 +1173,6 @@ def benders_decomposition_linear_alternative(c, d, A, B, b, M,
                  (float('inf'),)*q, it, n)
     n = n + 1
     goto_first_part = True
-
+    ''' Avoiding infinite loop. '''
+    if(previous_x0 == new_x0 and np.array_equal(previous_y, new_y)):
+      return (x0, x, y, it, n)
