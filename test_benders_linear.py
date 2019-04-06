@@ -66,7 +66,6 @@ def test3(A, B, b, c, d, M):
   print_results(x0, x, y, it, n)
   test_simplex(A, B, b, c, d)
 
-
 M = 10000000000.0
 
 c = [8.]

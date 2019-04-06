@@ -73,7 +73,7 @@ def extremeRay_and_dRow(xk, **kwargs):
       n = tableauSize[1]-1
       k = pivcol
       yk = np.matrix(tableau[:-1,k]).T 
-      # N is list of  non-basic variables and
+      # N is the list of  non-basic variables and
       # B is basis variables set:
       #         N = {0, 1, ..., n+m-1} / B
       N = list(set(range(0,n+m)).difference(set(basis)))
@@ -532,6 +532,7 @@ def benders_decomposition_linear_original(c, d, A, B, b,
   else:
     x0 = float('inf')
     (y, it2) = chooseAnyPointG(Q, B, d, b)
+    previous_x0, previous_y = x0, y
     it = it + it2
     goto_second_part = True
   n = 0
@@ -765,6 +766,7 @@ def benders_decomposition_linear_original_bounded(c, d, A, B, b, M,
   else:
     x0 = float('inf')
     (y, it2) = chooseAnyPointG(Q, B, d, b)
+    previous_x0, previous_y = x0, y
     it = it + it2
     goto_second_part = True
   n = 0
@@ -1002,6 +1004,7 @@ def benders_decomposition_linear_alternative(c, d, A, B, b, M,
   else:
     x0 = float('inf')
     (y, it2) = chooseAnyPointG(Q, B, d, b)
+    previous_x0, previous_y = x0, y
     it = it + it2
     goto_second_part = True
   n = 0
